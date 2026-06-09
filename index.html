@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lời Mời Sinh Nhật Đặc Biệt</title>
+    <style>
+        :root {
+            --primary-color: #ff9a9e;
+            --secondary-color: #fad0c4;
+            --text-color: #4a4a4a;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Khung bao ngoài thiệp */
+        .birthday-card {
+            position: relative;
+            width: 350px;
+            height: 450px;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transform: perspective(2500px);
+            transition: 1.5s;
+        }
+
+        .birthday-card.open {
+            transform: perspective(2500px) rotate(5deg);
+        }
+
+        /* Mặt trước của thiệp */
+        .front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            transform-origin: left;
+            transition: 1s;
+            border: 5px solid #fff;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+        }
+
+        .birthday-card.open .front {
+            transform: rotateY(-160deg);
+        }
+
+        .front h1 {
+            color: #ff4d6d;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .front .click-me {
+            background: #ff4d6d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+
+        /* Nội dung bên trong thiệp */
+        .inside {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 10px;
+            z-index: -1;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .inside h2 {
+            color: #ff4d6d;
+            margin-bottom: 15px;
+        }
+
+        .inside p {
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .info {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #e63946;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hiệu ứng pháo hoa giấy khi mở */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f2d74e;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="birthday-card" id="card" onclick="openCard()">
+        <div class="front">
+            <h1>Gửi Bạn Một Món Quà... 🎁</h1>
+            <div class="click-me">Chạm để mở thiệp</div>
+        </div>
+
+        <div class="inside">
+            <h2>THƯ MỜI SINH NHẬT</h2>
+            <p>Rất mong bạn sẽ đến chung vui cùng mình trong bữa tiệc sinh nhật sắp tới!</p>
+            <div class="info">
+                📅 20:00 - Thứ Bảy này<br>
+                📍 Tại: Nhà của mình<br>
+                👗 Dresscode: Trắng/Hồng
+            </div>
+            <p style="margin-top: 15px; font-style: italic;">Sự hiện diện của bạn là món quà lớn nhất đối với mình!</p>
+        </div>
+    </div>
+
+    <script>
+        function openCard() {
+            document.getElementById('card').classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
