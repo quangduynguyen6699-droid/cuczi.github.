@@ -3,306 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lời Mời Sinh Nhật Đặc Biệt</title>
+    <title>Trang Web Thi Thử Đố Vui</title>
     <style>
         :root {
-            --primary-color: #ff9a9e;
-            --secondary-color: #fad0c4;
-            --text-color: #4a4a4a;
+            --primary-color: #4a90e2;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-        }
-
-        /* Khung bao ngoài thiệp */
-        .birthday-card {
-            position: relative;
-            width: 360px;
-            height: 480px;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transform: perspective(2500px);
-            transition: 1.5s;
-        }
-
-        /* Khi mở thiệp, hơi xoay nhẹ cả cụm thiệp để tạo góc nhìn 3D đẹp mắt */
-        .birthday-card.open {
-            transform: perspective(2500px) rotateY(15deg);
-        }
-
-        /* Tạo cụm nắp thiệp */
-        .cover {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform-origin: left;
-            transform-style: preserve-3d;
-            transition: 1.5s;
-            z-index: 2;
-        }
-
-        .birthday-card.open .cover {
-            transform: rotateY(-160deg);
-        }
-
-        /* Định dạng chung cho các mặt của nắp thiệp */
-        .front, .back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-            border: 5px solid #fff;
-        }
-
-        /* Mặt trước của thiệp */
-        .front {
-            background-color: #fff;
-            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-            box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
-            padding: 20px;
-        }
-
-        .front h1 {
-            color: #ff4d6d;
-            font-size: 1.8rem;
-            text-align: center;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-
-        .front .heart-icon {
-            font-size: 3.5rem;
-            color: #ff4d6d;
-            margin-bottom: 25px;
-            animation: beat 1.2s infinite;
-        }
-
-        .front .click-me {
-            background: #ff4d6d;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-        }
-
-        /* Mặt sau của nắp thiệp */
-        .back {
-            background-color: #fff5f5;
-            transform: rotateY(180deg);
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .back-pattern {
-            width: 85%;
-            height: 85%;
-            border: 2px dashed #ffb3c1;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #ff758f;
-            font-size: 3.5rem;
-        }
-
-        /* Nội dung bên trong thiệp */
-        .inside {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            border-radius: 10px;
-            z-index: 1;
-            padding: 35px 25px;
-            box-sizing: border-box;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Căn đều bố cục từ trên xuống dưới */
-            box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
-            border: 5px solid #fff;
-        }
-
-        .inside h2 {
-            color: #ff4d6d;
-            margin: 0 0 10px 0;
-            font-size: 1.6rem;
-            letter-spacing: 1px;
-        }
-
-        .poem {
+            background-color: var(--bg-color);
             color: var(--text-color);
-            font-style: italic;
-            line-height: 1.5;
-            font-size: 1.05rem;
             margin: 0;
-            padding: 0 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .info {
-            padding: 15px;
-            background-color: #fff0f3;
-            border-radius: 10px;
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Khung đăng nhập */
+        .auth-box {
+            text-align: center;
+        }
+
+        input[type="password"] {
+            width: 80%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="password"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
             font-weight: bold;
-            color: #e63946;
-            line-height: 1.8;
-            font-size: 1.05rem;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
-            text-align: left; /* Để thông tin thời gian địa điểm ngay hàng thẳng lối */
-            margin: 10px 0;
         }
 
-        .inside .closing {
-            margin: 0;
-            font-weight: 500;
-            color: #ff4d6d;
-            font-size: 1rem;
-            line-height: 1.4;
+        button:hover {
+            opacity: 0.9;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        /* Khung câu hỏi */
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
 
-        @keyframes beat {
-            0% { transform: scale(1); }
-            20% { transform: scale(1.15); }
-            40% { transform: scale(1); }
-            60% { transform: scale(1.15); }
-            100% { transform: scale(1); }
+        .question p {
+            font-weight: 600;
+            font-size: 17px;
+            margin-bottom: 12px;
         }
 
-        /* Hiệu ứng pháo hoa giấy */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            z-index: 10;
-            border-radius: 50%;
-            animation: fall linear forwards;
+        .options label {
+            display: block;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #e9ecef;
+            transition: background-color 0.2s;
         }
 
-        @keyframes fall {
-            0% {
-                transform: translateY(-20px) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
+        .options label:hover {
+            background-color: #e9ecef;
+        }
+
+        .options input {
+            margin-right: 10px;
+        }
+
+        /* Kết quả */
+        .result-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e8f4fd;
+            border: 1px solid #bce0fd;
+        }
+
+        #score-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Chèn bài nhạc Happy Birthday (Sử dụng link audio trực tuyến ổn định công cộng) -->
-    <audio id="birthday-music" loop>
-        <source src="https://assets.mixkit.co/active_storage/sfx/123/123-84.wav" type="audio/wav">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        Trình duyệt của bạn không hỗ trợ phát âm thanh.
-    </audio>
-
-    <div class="birthday-card" id="card" onclick="openCard()">
-        <!-- Cụm nắp thiệp lật 3D -->
-        <div class="cover">
-            <!-- Mặt ngoài trước khi mở -->
-            <div class="front">
-                <h1>Gửi bạn lời mời<br>trân trọng nhất</h1>
-                <div class="heart-icon">❤️</div>
-                <div class="click-me">Chạm để mở thiệp</div>
-            </div>
-            <!-- Mặt trong của nắp khi lật ra -->
-            <div class="back">
-                <div class="back-pattern">🎂</div>
-            </div>
+    <div class="container">
+        <div id="login-screen" class="auth-box">
+            <h2>Hệ Thống Thi Thử</h2>
+            <p>Vui lòng nhập mật khẩu để bắt đầu bài thi</p>
+            <input type="password" id="password" placeholder="Nhập mật khẩu tại đây...">
+            <div id="error-message" class="error-msg hidden">Mật khẩu không chính xác! Vui lòng thử lại.</div>
+            <button onclick="checkPassword()">Vào Thi</button>
         </div>
 
-        <!-- Phần nội dung cố định ở đáy thiệp -->
-        <div class="inside">
-            <h2>THƯ MỜI SINH NHẬT</h2>
+        <div id="quiz-screen" class="hidden">
+            <h2>Bài Thi Đố Vui Tiếng Việt</h2>
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
             
-            <p class="poem">
-                "Nắng Bách Khoa thiêu đốt thời trai trẻ,<br>
-                Bạn có mặt đốt bánh cùng với tôi."
-            </p>
+            <form id="quiz-form">
+                <div class="question">
+                    <p>Câu 1: Cái gì bằng cái vung, vùng xuống ao, đào chẳng thấy, lấy chẳng được?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q1" value="A"> Lá sen</label>
+                        <label><input type="radio" name="q1" value="B"> Mặt trăng soi bóng nước</label>
+                        <label><input type="radio" name="q1" value="C"> Cái đĩa</label>
+                        <label><input type="radio" name="q1" value="D"> Con cá</label>
+                    </div>
+                </div>
 
-            <div class="info">
-                📅 <b>Thời gian:</b> 19h00 Thứ 4 ngày 10 tháng 6<br>
-                📍 <b>Tại:</b> THPT Lê Quý Đôn - ĐĐ
-            </div>
-            
-            <p class="closing">
-                Hãy mặc một bộ đồ thật đẹp cùng với tâm trạng vui vẻ nhất ❤️
-            </p>
+                <div class="question">
+                    <p>Câu 2: Con đường nào dài nhất?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q2" value="A"> Đường quốc lộ 1A</label>
+                        <label><input type="radio" name="q2" value="B"> Đường Xích Đạo</label>
+                        <label><input type="radio" name="q2" value="C"> Đường đời</label>
+                        <label><input type="radio" name="q2" value="D"> Đường đi bộ</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>Câu 3: Con gì đập thì sống, không đập thì chết?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q3" value="A"> Con tim</label>
+                        <label><input type="radio" name="q3" value="B"> Con muỗi</label>
+                        <label><input type="radio" name="q3" value="C"> Con sông</label>
+                        <label><input type="radio" name="q3" value="D"> Con mắt</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>Câu 4: Hoa gì nuôi sống con người?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q4" value="A"> Hoa mai</label>
+                        <label><input type="radio" name="q4" value="B"> Hoa hồng</label>
+                        <label><input type="radio" name="q4" value="C"> Hoa hướng dương</label>
+                        <label><input type="radio" name="q4" value="D"> Hoa lúa</label>
+                    </div>
+                </div>
+
+                <button type="button" onclick="submitQuiz()">Nộp Bài</button>
+            </form>
+        </div>
+
+        <div id="result-screen" class="result-box hidden">
+            <h2>Kết Quả Bài Thi</h2>
+            <p>Chúc mừng bạn đã hoàn thành bài thi đố vui!</p>
+            <div id="score-text">0 / 4 Câu Đúng</div>
+            <p id="feedback-text"></p>
+            <button onclick="restartQuiz()" style="margin-top: 15px; background-color: #6c757d;">Thi Lại</button>
         </div>
     </div>
 
     <script>
-        function openCard() {
-            const card = document.getElementById('card');
-            const music = document.getElementById('birthday-music');
+        // Đáp án đúng của các câu hỏi
+        const correctAnswers = {
+            q1: "B",
+            q2: "C",
+            q3: "A",
+            q4: "D"
+        };
+
+        // Hàm kiểm tra mật khẩu
+        function checkPassword() {
+            const passwordInput = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
             
-            card.classList.toggle('open');
-            
-            if (card.classList.contains('open')) {
-                // Kích hoạt pháo hoa giấy vụn
-                createConfetti();
-                // Phát nhạc sinh nhật
-                music.play().catch(error => {
-                    console.log("Trình duyệt chặn phát tự động: " + error);
-                });
+            if (passwordInput === '1234') {
+                // Ẩn màn hình đăng nhập, hiện màn hình câu hỏi
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                errorMessage.classList.add('hidden');
             } else {
-                // Tắt hoặc tạm dừng nhạc nếu đóng thiệp lại
-                music.pause();
-                music.currentTime = 0; 
+                // Hiện thông báo lỗi
+                errorMessage.classList.remove('hidden');
             }
         }
 
-        function createConfetti() {
-            const colors = ['#f2d74e', '#ff4d6d', '#9b5de5', '#00bbf9', '#00f5d4', '#ff9f1c'];
-            
-            for (let i = 0; i < 60; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                confetti.style.animationDelay = (Math.random() * 0.4) + 's';
-                
-                const size = Math.random() * 8 + 6 + 'px';
-                confetti.style.width = size;
-                confetti.style.height = size;
-                if(Math.random() > 0.5) confetti.style.borderRadius = '0'; 
+        // Hàm xử lý nộp bài và tính điểm
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
 
-                document.body.appendChild(confetti);
-
-                setTimeout(() => {
-                    confetti.remove();
-                }, 4500);
+            // Duyệt qua từng câu hỏi để tính điểm
+            for (let key in correctAnswers) {
+                const selectedOption = form.elements[key].value;
+                if (selectedOption === correctAnswers[key]) {
+                    score++;
+                }
             }
+
+            // Ẩn màn hình câu hỏi, hiện màn hình kết quả
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Hiển thị điểm số
+            document.getElementById('score-text').innerText = `${score} / ${totalQuestions} Câu Đúng`;
+            
+            // Lời nhắn tùy theo số điểm
+            let feedback = "";
+            if(score === totalQuestions) {
+                feedback = "Xuất sắc! Bạn thật là thiên tài đố vui! 🌟";
+            } else if (score >= 2) {
+                feedback = "Khá lắm! Bạn hiểu biết khá rộng đấy! 👍";
+            } else {
+                feedback = "Cố gắng lên nhé, thử lại xem sao! 💪";
+            }
+            document.getElementById('feedback-text').innerText = feedback;
+        }
+
+        // Hàm để reset thi lại từ đầu nếu muốn
+        function restartQuiz() {
+            document.getElementById('quiz-form').reset();
+            document.getElementById('password').value = '';
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
         }
     </script>
 </body>
