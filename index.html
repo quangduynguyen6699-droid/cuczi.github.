@@ -1,1 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Web Thi Thử Đố Vui</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Khung đăng nhập */
+        .auth-box {
+            text-align: center;
+        }
+
+        input[type="password"] {
+            width: 80%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="password"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* Khung câu hỏi */
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .question p {
+            font-weight: 600;
+            font-size: 17px;
+            margin-bottom: 12px;
+        }
+
+        .options label {
+            display: block;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #e9ecef;
+            transition: background-color 0.2s;
+        }
+
+        .options label:hover {
+            background-color: #e9ecef;
+        }
+
+        .options input {
+            margin-right: 10px;
+        }
+
+        /* Kết quả */
+        .result-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e8f4fd;
+            border: 1px solid #bce0fd;
+        }
+
+        #score-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="login-screen" class="auth-box">
+            <h2>Hệ Thống Thi Thử</h2>
+            <p>Vui lòng nhập mật khẩu để bắt đầu bài thi</p>
+            <input type="password" id="password" placeholder="Nhập mật khẩu tại đây...">
+            <div id="error-message" class="error-msg hidden">Mật khẩu không chính xác! Vui lòng thử lại.</div>
+            <button onclick="checkPassword()">Vào Thi</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <h2>Bài Thi Đố Vui Tiếng Việt</h2>
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+            
+            <form id="quiz-form">
+                <div class="question">
+                    <p>Câu 1: Cái gì bằng cái vung, vùng xuống ao, đào chẳng thấy, lấy chẳng được?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q1" value="A"> Lá sen</label>
+                        <label><input type="radio" name="q1" value="B"> Mặt trăng soi bóng nước</label>
+                        <label><input type="radio" name="q1" value="C"> Cái đĩa</label>
+                        <label><input type="radio" name="q1" value="D"> Con cá</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>Câu 2: Con đường nào dài nhất?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q2" value="A"> Đường quốc lộ 1A</label>
+                        <label><input type="radio" name="q2" value="B"> Đường Xích Đạo</label>
+                        <label><input type="radio" name="q2" value="C"> Đường đời</label>
+                        <label><input type="radio" name="q2" value="D"> Đường đi bộ</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>Câu 3: Con gì đập thì sống, không đập thì chết?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q3" value="A"> Con tim</label>
+                        <label><input type="radio" name="q3" value="B"> Con muỗi</label>
+                        <label><input type="radio" name="q3" value="C"> Con sông</label>
+                        <label><input type="radio" name="q3" value="D"> Con mắt</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>Câu 4: Hoa gì nuôi sống con người?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q4" value="A"> Hoa mai</label>
+                        <label><input type="radio" name="q4" value="B"> Hoa hồng</label>
+                        <label><input type="radio" name="q4" value="C"> Hoa hướng dương</label>
+                        <label><input type="radio" name="q4" value="D"> Hoa lúa</label>
+                    </div>
+                </div>
+
+                <button type="button" onclick="submitQuiz()">Nộp Bài</button>
+            </form>
+        </div>
+
+        <div id="result-screen" class="result-box hidden">
+            <h2>Kết Quả Bài Thi</h2>
+            <p>Chúc mừng bạn đã hoàn thành bài thi đố vui!</p>
+            <div id="score-text">0 / 4 Câu Đúng</div>
+            <p id="feedback-text"></p>
+            <button onclick="restartQuiz()" style="margin-top: 15px; background-color: #6c757d;">Thi Lại</button>
+        </div>
+    </div>
+
+    <script>
+        // Đáp án đúng của các câu hỏi
+        const correctAnswers = {
+            q1: "B",
+            q2: "C",
+            q3: "A",
+            q4: "D"
+        };
+
+        // Hàm kiểm tra mật khẩu
+        function checkPassword() {
+            const passwordInput = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+            
+            if (passwordInput === '1234') {
+                // Ẩn màn hình đăng nhập, hiện màn hình câu hỏi
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                errorMessage.classList.add('hidden');
+            } else {
+                // Hiện thông báo lỗi
+                errorMessage.classList.remove('hidden');
+            }
+        }
+
+        // Hàm xử lý nộp bài và tính điểm
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+
+            // Duyệt qua từng câu hỏi để tính điểm
+            for (let key in correctAnswers) {
+                const selectedOption = form.elements[key].value;
+                if (selectedOption === correctAnswers[key]) {
+                    score++;
+                }
+            }
+
+            // Ẩn màn hình câu hỏi, hiện màn hình kết quả
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Hiển thị điểm số
+            document.getElementById('score-text').innerText = `${score} / ${totalQuestions} Câu Đúng`;
+            
+            // Lời nhắn tùy theo số điểm
+            let feedback = "";
+            if(score === totalQuestions) {
+                feedback = "Xuất sắc! Bạn thật là thiên tài đố vui! 🌟";
+            } else if (score >= 2) {
+                feedback = "Khá lắm! Bạn hiểu biết khá rộng đấy! 👍";
+            } else {
+                feedback = "Cố gắng lên nhé, thử lại xem sao! 💪";
+            }
+            document.getElementById('feedback-text').innerText = feedback;
+        }
+
+        // Hàm để reset thi lại từ đầu nếu muốn
+        function restartQuiz() {
+            document.getElementById('quiz-form').reset();
+            document.getElementById('password').value = '';
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
