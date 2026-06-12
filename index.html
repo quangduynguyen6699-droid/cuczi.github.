@@ -46,23 +46,37 @@
             display: none !important;
         }
 
-        /* Khung đăng nhập */
+        /* Khung đăng nhập & điền tên */
         .auth-box {
             text-align: center;
         }
 
-        input[type="password"] {
-            width: 80%;
+        .input-group {
+            text-align: left;
+            width: 85%;
+            margin: 0 auto 15px auto;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
             padding: 12px;
-            margin: 15px 0;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             outline: none;
+            box-sizing: border-box;
             transition: border-color 0.3s;
         }
 
-        input[type="password"]:focus {
+        input[type="text"]:focus, input[type="password"]:focus {
             border-color: var(--primary-color);
         }
 
@@ -70,17 +84,24 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 24px;
             font-size: 16px;
             border-radius: 8px;
             cursor: pointer;
-            width: 100%;
+            width: 85%;
+            margin: 10px auto;
+            display: block;
             transition: opacity 0.2s;
             font-weight: bold;
         }
 
         button:hover {
             opacity: 0.9;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
 
         /* Khung câu hỏi */
@@ -134,7 +155,15 @@
         .error-msg {
             color: var(--danger-color);
             font-size: 14px;
-            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #loading-text {
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
@@ -143,14 +172,25 @@
     <div class="container">
         <div id="login-screen" class="auth-box">
             <h2>Hệ Thống Thi Thử</h2>
-            <p>Vui lòng nhập mật khẩu để bắt đầu bài thi</p>
-            <input type="password" id="password" placeholder="Nhập mật khẩu tại đây...">
-            <div id="error-message" class="error-msg hidden">Mật khẩu không chính xác! Vui lòng thử lại.</div>
+            <p style="color: #666; margin-bottom: 25px;">Vui lòng điền thông tin để bắt đầu bài thi</p>
+            
+            <div class="input-group">
+                <label for="full-name">Họ và Tên của bạn:</label>
+                <input type="text" id="full-name" placeholder="Ví dụ: Nguyễn Văn A">
+            </div>
+
+            <div class="input-group">
+                <label for="password">Mật khẩu phòng thi:</label>
+                <input type="password" id="password" placeholder="Nhập mật khẩu kích hoạt...">
+            </div>
+
+            <div id="error-message" class="error-msg hidden">Mật khẩu không chính xác hoặc bạn chưa nhập tên!</div>
             <button onclick="checkPassword()">Vào Thi</button>
         </div>
 
         <div id="quiz-screen" class="hidden">
-            <h2>Bài Thi Đố Vui Tiếng Việt</h2>
+            <h2 style="margin-bottom: 5px;">Bài Thi Đố Vui Tiếng Việt</h2>
+            <p id="student-display" style="text-align:center; color:#666; font-weight:bold; margin-bottom:20px;"></p>
             <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
             
             <form id="quiz-form">
@@ -194,7 +234,8 @@
                     </div>
                 </div>
 
-                <button type="button" onclick="submitQuiz()">Nộp Bài</button>
+                <button type="button" id="submit-btn" style="width:100%;" onclick="submitQuiz()">Nộp Bài</button>
+                <div id="loading-text" class="hidden">Đang tải kết quả lên Google Sheets, vui lòng chờ...</div>
             </form>
         </div>
 
@@ -203,12 +244,14 @@
             <p>Chúc mừng bạn đã hoàn thành bài thi đố vui!</p>
             <div id="score-text">0 / 4 Câu Đúng</div>
             <p id="feedback-text"></p>
-            <button onclick="restartQuiz()" style="margin-top: 15px; background-color: #6c757d;">Thi Lại</button>
+            <button onclick="restartQuiz()" style="margin-top: 15px; background-color: #6c757d; width: 100%;">Thi Lại</button>
         </div>
     </div>
 
     <script>
-        // Đáp án đúng của các câu hỏi
+        // === ĐƯỜNG LINK GOOGLE APPS SCRIPT CỦA BẠN (DÁN VÀO ĐÂY) ===
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqJJSrRvOu5oHma2uRZ3eoOuzcXDc1EM35yhtdMKeG2vUvvy3aJEZrvYlldbSdaV3Fow/exec';
+
         const correctAnswers = {
             q1: "B",
             q2: "C",
@@ -216,59 +259,96 @@
             q4: "D"
         };
 
-        // Hàm kiểm tra mật khẩu
+        let thiSinhName = ""; // Biến lưu tên người thi toàn cục
+
         function checkPassword() {
             const passwordInput = document.getElementById('password').value;
+            const nameInput = document.getElementById('full-name').value.trim();
             const errorMessage = document.getElementById('error-message');
             
-            if (passwordInput === '1234') {
-                // Ẩn màn hình đăng nhập, hiện màn hình câu hỏi
+            // Kiểm tra mật khẩu có bằng 1234 và tên không được để trống
+            if (passwordInput === '1234' && nameInput !== "") {
+                thiSinhName = nameInput; // Lưu tên vào biến
+                document.getElementById('student-display').innerText = `Thí sinh: ${thiSinhName}`;
+                
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('quiz-screen').classList.remove('hidden');
                 errorMessage.classList.add('hidden');
             } else {
-                // Hiện thông báo lỗi
                 errorMessage.classList.remove('hidden');
             }
         }
 
-        // Hàm xử lý nộp bài và tính điểm
         function submitQuiz() {
             const form = document.getElementById('quiz-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const loadingText = document.getElementById('loading-text');
+            
             let score = 0;
             const totalQuestions = Object.keys(correctAnswers).length;
 
-            // Duyệt qua từng câu hỏi để tính điểm
+            // Thu thập dữ liệu đáp án
+            let userAnswers = {
+                fullName: thiSinhName, // Thêm tên thí sinh vào dữ liệu gửi đi
+                q1: form.elements['q1'].value || "Không trả lời",
+                q2: form.elements['q2'].value || "Không trả lời",
+                q3: form.elements['q3'].value || "Không trả lời",
+                q4: form.elements['q4'].value || "Không trả lời"
+            };
+
+            // Tính điểm số
             for (let key in correctAnswers) {
-                const selectedOption = form.elements[key].value;
-                if (selectedOption === correctAnswers[key]) {
+                if (userAnswers[key] === correctAnswers[key]) {
                     score++;
                 }
             }
-
-            // Ẩn màn hình câu hỏi, hiện màn hình kết quả
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-
-            // Hiển thị điểm số
-            document.getElementById('score-text').innerText = `${score} / ${totalQuestions} Câu Đúng`;
             
-            // Lời nhắn tùy theo số điểm
-            let feedback = "";
-            if(score === totalQuestions) {
-                feedback = "Xuất sắc! Bạn thật là thiên tài đố vui! 🌟";
-            } else if (score >= 2) {
-                feedback = "Khá lắm! Bạn hiểu biết khá rộng đấy! 👍";
-            } else {
-                feedback = "Cố gắng lên nhé, thử lại xem sao! 💪";
-            }
-            document.getElementById('feedback-text').innerText = feedback;
+            userAnswers.score = `${score}/${totalQuestions}`;
+
+            // Khóa nút bấm và hiện thông báo chờ tải
+            submitBtn.disabled = true;
+            loadingText.classList.remove('hidden');
+
+            // GỬI DATA LÊN GOOGLE SHEETS
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userAnswers)
+            })
+            .then(() => {
+                // Ẩn màn hình câu hỏi, hiện màn hình điểm
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('result-screen').classList.remove('hidden');
+
+                document.getElementById('score-text').innerText = `${score} / ${totalQuestions} Câu Đúng`;
+                
+                let feedback = "";
+                if(score === totalQuestions) {
+                    feedback = `Xuất sắc! Bạn thật là thiên tài đố vui, ${thiSinhName}! 🌟`;
+                } else if (score >= 2) {
+                    feedback = `Khá lắm, ${thiSinhName}! Bạn hiểu biết khá rộng đấy! 👍`;
+                } else {
+                    feedback = `Cố gắng lên nhé ${thiSinhName}, thử lại xem sao! 💪`;
+                }
+                document.getElementById('feedback-text').innerText = feedback;
+            })
+            .catch(error => {
+                console.error('Lỗi gửi data:', error);
+                alert('Có lỗi mạng xảy ra khi gửi kết quả lên Sheet.');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                loadingText.classList.add('hidden');
+            });
         }
 
-        // Hàm để reset thi lại từ đầu nếu muốn
         function restartQuiz() {
             document.getElementById('quiz-form').reset();
             document.getElementById('password').value = '';
+            document.getElementById('full-name').value = '';
             document.getElementById('result-screen').classList.add('hidden');
             document.getElementById('login-screen').classList.remove('hidden');
         }
