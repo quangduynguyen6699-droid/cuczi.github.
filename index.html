@@ -3,354 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Web Thi Thử Đố Vui</title>
+    <title>Happy Birthday Như Minh ✨</title>
+    <!-- Font chữ lãng mạn cho thư và hiện đại cho đồng hồ -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Thư viện hiệu ứng pháo hoa canvas-confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --primary-color: #4a90e2;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --bg-color: #f5f7fa;
-            --card-bg: #ffffff;
-            --text-color: #333333;
+            --bg-color: #0b0f19;
+            --text-color: #f3f4f6;
+            --accent-color: #ff758c;
+            --accent-glow: #ff758c88;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Quicksand', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
-            padding: 20px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #090514 100%);
         }
 
-        .container {
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            box-sizing: border-box;
-        }
-
-        h2 {
+        /* Vùng Đếm Ngược */
+        #countdown-container {
             text-align: center;
-            color: var(--primary-color);
-            margin-top: 0;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Khung đăng nhập & điền tên */
-        .auth-box {
-            text-align: center;
-        }
-
-        .input-group {
-            text-align: left;
-            width: 85%;
-            margin: 0 auto 15px auto;
-        }
-
-        .input-group label {
-            font-weight: 600;
-            font-size: 14px;
-            color: #555;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: var(--primary-color);
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 85%;
-            margin: 10px auto;
-            display: block;
-            transition: opacity 0.2s;
-            font-weight: bold;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        /* Khung câu hỏi */
-        .question {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .question p {
-            font-weight: 600;
-            font-size: 17px;
-            margin-bottom: 12px;
-        }
-
-        .options label {
-            display: block;
-            padding: 10px 15px;
-            background-color: #f8f9fa;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #e9ecef;
-            transition: background-color 0.2s;
-        }
-
-        .options label:hover {
-            background-color: #e9ecef;
-        }
-
-        .options input {
-            margin-right: 10px;
-        }
-
-        /* Kết quả */
-        .result-box {
-            text-align: center;
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 10;
             padding: 20px;
-            border-radius: 8px;
-            background-color: #e8f4fd;
-            border: 1px solid #bce0fd;
         }
 
-        #score-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin: 15px 0;
+        #countdown-container h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+            color: #e0e7ff;
+            text-shadow: 0 0 10px var(--accent-glow);
         }
 
-        .error-msg {
-            color: var(--danger-color);
-            font-size: 14px;
-            margin-bottom: 10px;
-            text-align: center;
+        .timer {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
         }
 
-        #loading-text {
-            color: #666;
-            font-style: italic;
-            margin-top: 10px;
-            text-align: center;
+        .time-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 90px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            text-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .time-box .label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Vùng Nội Dung Bất Ngờ (Thư) */
+        #birthday-container {
+            display: none;
+            opacity: 0;
+            max-width: 600px;
+            width: 90%;
+            margin: 20px auto;
+            transition: opacity 2s ease;
+            z-index: 10;
+        }
+
+        .letter-box {
+            background: linear-gradient(135deg, rgba(20, 16, 35, 0.85) 0%, rgba(10, 7, 18, 0.95) 100%);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 117, 140, 0.2);
+            box-shadow: 0 0 40px rgba(255, 117, 140, 0.15);
+            backdrop-filter: blur(12px);
+            position: relative;
+        }
+
+        .letter-box::before {
+            content: '🎂';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px var(--accent-color));
+        }
+
+        .letter-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #f1f5f9;
+            text-align: justify;
+            white-space: pre-line;
+        }
+
+        /* Chữ chạy hiệu ứng tự gõ */
+        .typed-text::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+            color: var(--accent-color);
+        }
+        
+        .typed-text.done::after {
+            display: none;
+        }
+
+        .signature-block {
+            margin-top: 2.5rem;
+            text-align: right;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .signature-block p {
+            margin-bottom: 0.2rem;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Responsive di động */
+        @media (max-width: 480px) {
+            .timer { gap: 0.7rem; }
+            .time-box { padding: 1rem; min-width: 70px; }
+            .time-box span { font-size: 1.8rem; }
+            .letter-box { padding: 1.5rem; }
+            .letter-content { font-size: 1rem; line-height: 1.6; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="login-screen" class="auth-box">
-            <h2>Hệ Thống Thi Thử</h2>
-            <p style="color: #666; margin-bottom: 25px;">Vui lòng điền thông tin để bắt đầu bài thi</p>
-            
-            <div class="input-group">
-                <label for="full-name">Họ và Tên của bạn:</label>
-                <input type="text" id="full-name" placeholder="Ví dụ: Nguyễn Văn A">
-            </div>
-
-            <div class="input-group">
-                <label for="password">Mật khẩu phòng thi:</label>
-                <input type="password" id="password" placeholder="Nhập mật khẩu kích hoạt...">
-            </div>
-
-            <div id="error-message" class="error-msg hidden">Mật khẩu không chính xác hoặc bạn chưa nhập tên!</div>
-            <button onclick="checkPassword()">Vào Thi</button>
+    <!-- MÀN HÌNH ĐẾM NGƯỢC -->
+    <div id="countdown-container">
+        <h2>ĐANG ĐẾM NGƯỢC ĐẾN KHOẢNH KHẮC ĐẶC BIỆT...</h2>
+        <div class="timer">
+            <div class="time-box"><span id="days">00</span><div class="label">Ngày</div></div>
+            <div class="time-box"><span id="hours">00</span><div class="label">Giờ</div></div>
+            <div class="time-box"><span id="minutes">00</span><div class="label">Phút</div></div>
+            <div class="time-box"><span id="seconds">00</span><div class="label">Giây</div></div>
         </div>
+    </div>
 
-        <div id="quiz-screen" class="hidden">
-            <h2 style="margin-bottom: 5px;">Bài Thi Đố Vui Tiếng Việt</h2>
-            <p id="student-display" style="text-align:center; color:#666; font-weight:bold; margin-bottom:20px;"></p>
-            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
-            
-            <form id="quiz-form">
-                <div class="question">
-                    <p>Câu 1: Cái gì bằng cái vung, vùng xuống ao, đào chẳng thấy, lấy chẳng được?</p>
-                    <div class="options">
-                        <label><input type="radio" name="q1" value="A"> Lá sen</label>
-                        <label><input type="radio" name="q1" value="B"> Mặt trăng soi bóng nước</label>
-                        <label><input type="radio" name="q1" value="C"> Cái đĩa</label>
-                        <label><input type="radio" name="q1" value="D"> Con cá</label>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <p>Câu 2: Con đường nào dài nhất?</p>
-                    <div class="options">
-                        <label><input type="radio" name="q2" value="A"> Đường quốc lộ 1A</label>
-                        <label><input type="radio" name="q2" value="B"> Đường Xích Đạo</label>
-                        <label><input type="radio" name="q2" value="C"> Đường đời</label>
-                        <label><input type="radio" name="q2" value="D"> Đường đi bộ</label>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <p>Câu 3: Con gì đập thì sống, không đập thì chết?</p>
-                    <div class="options">
-                        <label><input type="radio" name="q3" value="A"> Con tim</label>
-                        <label><input type="radio" name="q3" value="B"> Con muỗi</label>
-                        <label><input type="radio" name="q3" value="C"> Con sông</label>
-                        <label><input type="radio" name="q3" value="D"> Con mắt</label>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <p>Câu 4: Hoa gì nuôi sống con người?</p>
-                    <div class="options">
-                        <label><input type="radio" name="q4" value="A"> Hoa mai</label>
-                        <label><input type="radio" name="q4" value="B"> Hoa hồng</label>
-                        <label><input type="radio" name="q4" value="C"> Hoa hướng dương</label>
-                        <label><input type="radio" name="q4" value="D"> Hoa lúa</label>
-                    </div>
-                </div>
-
-                <button type="button" id="submit-btn" style="width:100%;" onclick="submitQuiz()">Nộp Bài</button>
-                <div id="loading-text" class="hidden">Đang tải kết quả lên Google Sheets, vui lòng chờ...</div>
-            </form>
-        </div>
-
-        <div id="result-screen" class="result-box hidden">
-            <h2>Kết Quả Bài Thi</h2>
-            <p>Chúc mừng bạn đã hoàn thành bài thi đố vui!</p>
-            <div id="score-text">0 / 4 Câu Đúng</div>
-            <p id="feedback-text"></p>
-            <button onclick="restartQuiz()" style="margin-top: 15px; background-color: #6c757d; width: 100%;">Thi Lại</button>
+    <!-- MÀN HÌNH QUÀ TẶNG (THƯ & PHÁO HOA) -->
+    <div id="birthday-container">
+        <div class="letter-box">
+            <div class="letter-content" id="letter">
+                <span id="text-target" class="typed-text"></span>
+            </div>
+            <div class="signature-block" id="signature">
+                <p>Pro Noodle</p>
+                <p style="font-size: 1.4rem; font-family: 'Quicksand', sans-serif; font-weight:600; color:#9ca3af;">Duy (đtrai)</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // === ĐƯỜNG LINK GOOGLE APPS SCRIPT CỦA BẠN (DÁN VÀO ĐÂY) ===
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqJJSrRvOu5oHma2uRZ3eoOuzcXDc1EM35yhtdMKeG2vUvvy3aJEZrvYlldbSdaV3Fow/exec';
+        // Cài đặt mốc thời gian đích chính xác là 00h00 ngày 15/6/2026
+        const targetDate = new Date("2026-06-15T00:00:00").getTime();
 
-        const correctAnswers = {
-            q1: "B",
-            q2: "C",
-            q3: "A",
-            q4: "D"
-        };
+        // Nội dung bức thư giữ nguyên gốc từ ảnh 2aOboQdWpN1tooQB5CGGvSsXzoQcyQxv5OMM7B3o.jpg
+        const letterText = `Chảo sang hảo xin chào Như Minh, anh là Quang Duy đây, đã bước sang tuổi mới rồi, em có điều ước gì chưa ? nếu chưa thì ước ngay đi, còn nếu rồi thì anh ước tiếp cho nhé. Monh cho em có một tuổi mới hạnh phúc hơn, vui vẻ hơn đạt được nhiều thành công hơn. Tuổi vừa qua em đã cố gắng nhiều rồi, mong năm nay em vẫn cố gắng như thế nhưng thành công sẽ cộng 1 nhân 8 thêm mũ 3 rồi giai thừa 6 nhé. Nhưng quan trọng nhất mà anh vẫn luôn mong mỗi tuổi mới của em là sức khoẻ phải thật dồi dào sinh lực như người nhện, tuổi mới phải hạn chế thức khuya đi. Cuối cùng anh mong những điều tốt đẹp nhất sẽ luôn đến mới em vì em luôn xứng đáng có tất cả điều đó. Còn anh (món quà vô giá đẳng cấp top 1 kị sĩ thượng tướng siêu nhân của em) sẽ luôn bên cạnh hỗ trợ để tạo ra thêm nhiều hạnh phúc của em.`;
 
-        let thiSinhName = ""; // Biến lưu tên người thi toàn cục
+        const countdownContainer = document.getElementById('countdown-container');
+        const birthdayContainer = document.getElementById('birthday-container');
+        const textTarget = document.getElementById('text-target');
+        const signature = document.getElementById('signature');
 
-        function checkPassword() {
-            const passwordInput = document.getElementById('password').value;
-            const nameInput = document.getElementById('full-name').value.trim();
-            const errorMessage = document.getElementById('error-message');
-            
-            // Kiểm tra mật khẩu có bằng 1234 và tên không được để trống
-            if (passwordInput === '1234' && nameInput !== "") {
-                thiSinhName = nameInput; // Lưu tên vào biến
-                document.getElementById('student-display').innerText = `Thí sinh: ${thiSinhName}`;
-                
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('quiz-screen').classList.remove('hidden');
-                errorMessage.classList.add('hidden');
-            } else {
-                errorMessage.classList.remove('hidden');
+        const interval = setInterval(() => {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                clearInterval(interval);
+                triggerBirthdaySurprise();
+                return;
             }
+
+            const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
+        }, 1000);
+
+        function triggerBirthdaySurprise() {
+            // Ẩn màn hình đếm ngược
+            countdownContainer.style.opacity = '0';
+            countdownContainer.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                countdownContainer.style.display = 'none';
+                
+                // Hiện khung thư công chúa
+                birthdayContainer.style.display = 'block';
+                setTimeout(() => {
+                    birthdayContainer.style.opacity = '1';
+                    startTypingEffect();
+                    startFireworkShow();
+                }, 100);
+            }, 1000);
         }
 
-        function submitQuiz() {
-            const form = document.getElementById('quiz-form');
-            const submitBtn = document.getElementById('submit-btn');
-            const loadingText = document.getElementById('loading-text');
-            
-            let score = 0;
-            const totalQuestions = Object.keys(correctAnswers).length;
-
-            // Thu thập dữ liệu đáp án
-            let userAnswers = {
-                fullName: thiSinhName, // Thêm tên thí sinh vào dữ liệu gửi đi
-                q1: form.elements['q1'].value || "Không trả lời",
-                q2: form.elements['q2'].value || "Không trả lời",
-                q3: form.elements['q3'].value || "Không trả lời",
-                q4: form.elements['q4'].value || "Không trả lời"
-            };
-
-            // Tính điểm số
-            for (let key in correctAnswers) {
-                if (userAnswers[key] === correctAnswers[key]) {
-                    score++;
-                }
-            }
-            
-            userAnswers.score = `${score}/${totalQuestions}`;
-
-            // Khóa nút bấm và hiện thông báo chờ tải
-            submitBtn.disabled = true;
-            loadingText.classList.remove('hidden');
-
-            // GỬI DATA LÊN GOOGLE SHEETS
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userAnswers)
-            })
-            .then(() => {
-                // Ẩn màn hình câu hỏi, hiện màn hình điểm
-                document.getElementById('quiz-screen').classList.add('hidden');
-                document.getElementById('result-screen').classList.remove('hidden');
-
-                document.getElementById('score-text').innerText = `${score} / ${totalQuestions} Câu Đúng`;
-                
-                let feedback = "";
-                if(score === totalQuestions) {
-                    feedback = `Xuất sắc! Bạn thật là thiên tài đố vui, ${thiSinhName}! 🌟`;
-                } else if (score >= 2) {
-                    feedback = `Khá lắm, ${thiSinhName}! Bạn hiểu biết khá rộng đấy! 👍`;
+        // Hiệu ứng chữ chạy từng ký tự
+        function startTypingEffect() {
+            let index = 0;
+            function type() {
+                if (index < letterText.length) {
+                    textTarget.innerHTML += letterText.charAt(index);
+                    index++;
+                    setTimeout(type, 35); // Tốc độ gõ chữ
                 } else {
-                    feedback = `Cố gắng lên nhé ${thiSinhName}, thử lại xem sao! 💪`;
+                    textTarget.classList.add('done');
+                    signature.style.opacity = '1';
                 }
-                document.getElementById('feedback-text').innerText = feedback;
-            })
-            .catch(error => {
-                console.error('Lỗi gửi data:', error);
-                alert('Có lỗi mạng xảy ra khi gửi kết quả lên Sheet.');
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                loadingText.classList.add('hidden');
-            });
+            }
+            type();
         }
 
-        function restartQuiz() {
-            document.getElementById('quiz-form').reset();
-            document.getElementById('password').value = '';
-            document.getElementById('full-name').value = '';
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
+        // Hiệu ứng bắn pháo hoa từ thư viện canvas-confetti
+        function startFireworkShow() {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+
+            const duration = 15 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const intervalFireworks = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(intervalFireworks);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         }
     </script>
 </body>
